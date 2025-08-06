@@ -1,22 +1,21 @@
 <template>
   <div class="navbar bg-base-100 shadow">
     <div class="flex-1">
-      <a class="btn btn-ghost normal-case text-xl">My Portfolio</a>
+      <a class="btn btn-ghost normal-case text-xl text-base-content"
+        >My Portfolio</a
+      >
     </div>
 
-    <!-- Desktop Menu -->
     <div class="hidden md:flex">
-      <ul class="menu menu-horizontal px-1">
-        <li><RouterLink to="/">Home</RouterLink></li>
-        <li><RouterLink to="/about">About</RouterLink></li>
-        <li><RouterLink to="/projects">Projects</RouterLink></li>
-        <li><RouterLink to="/contact">Contact</RouterLink></li>
+      <ul class="menu menu-horizontal px-1 text-base-content">
+        <li v-for="link in links" :key="link.to">
+          <RouterLink :to="link.to">{{ link.label }}</RouterLink>
+        </li>
       </ul>
     </div>
 
-    <!-- Mobile Menu Dropdown -->
     <div class="dropdown dropdown-end md:hidden">
-      <label tabindex="0" class="btn btn-ghost lg:hidden">
+      <label tabindex="0" class="btn btn-ghost lg:hidden text-base-content">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
@@ -34,17 +33,15 @@
       </label>
       <ul
         tabindex="0"
-        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-base-content"
       >
-        <li><RouterLink to="/">Home</RouterLink></li>
-        <li><RouterLink to="/about">About</RouterLink></li>
-        <li><RouterLink to="/projects">Projects</RouterLink></li>
-        <li><RouterLink to="/contact">Contact</RouterLink></li>
+        <li v-for="link in links" :key="'mobile-' + link.to">
+          <RouterLink :to="link.to">{{ link.label }}</RouterLink>
+        </li>
       </ul>
     </div>
 
-    <!-- Dark Mode Toggle -->
-    <button class="btn btn-ghost ml-2" @click="toggleTheme">
+    <button class="btn btn-ghost ml-2 text-base-content" @click="toggleTheme">
       {{ theme === "light" ? "🌙" : "☀️" }}
     </button>
   </div>
@@ -54,7 +51,14 @@
 import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 
-const theme = ref("light");
+const links = [
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About" },
+  { to: "/projects", label: "Projects" },
+  { to: "/contact", label: "Contact" },
+];
+
+const theme = ref(localStorage.getItem("theme") || "light");
 
 onMounted(() => {
   document.documentElement.setAttribute("data-theme", theme.value);
@@ -63,5 +67,6 @@ onMounted(() => {
 function toggleTheme() {
   theme.value = theme.value === "light" ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", theme.value);
+  localStorage.setItem("theme", theme.value);
 }
 </script>
